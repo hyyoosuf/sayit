@@ -29,8 +29,13 @@ const guestOnlyPaths = [
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const token = request.cookies.get('auth-token')?.value
+  // const allCookies = request.cookies.getAll()
 
   console.log('中间件检查路径:', pathname, '- Token存在:', !!token)
+  if (token) {
+    console.log('中间件: Token前8位:', token.substring(0, 8) + '...')
+  }
+  // console.log('中间件: 所有Cookie:', allCookies.map(c => `${c.name}=${c.value ? c.value.substring(0, 8) + '...' : 'empty'}`).join(', '))
 
   // 检查是否为受保护的路径
   const isProtectedPath = protectedPaths.some(path => pathname.startsWith(path))
@@ -70,6 +75,6 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     // 匹配所有路径，除了以下路径
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|uploads).*)',
   ],
 } 
