@@ -1,121 +1,176 @@
-# SayIt 校园社交平台
+# 🎓 SayIt - 校园社交平台
 
-一个基于 Next.js 的现代化校园社交平台，包含表白墙、校园圈、市场、悬赏任务等功能。
+> 一个现代化的校园社交平台，连接校园生活的每一个瞬间
 
-## 🚀 快速开始
+## 📖 About / 关于项目
 
-### 1. 安装依赖
-```bash
-npm install
-```
+SayIt是一个专为大学生设计的全功能校园社交平台，旨在为校园生活提供一个便捷、安全、有趣的数字化交流空间。通过集成表白墙、校园圈、跳蚤市场和悬赏任务等多个功能模块，SayIt让校园生活更加丰富多彩。
 
-### 2. 环境配置
-创建 `.env.local` 文件并配置以下环境变量：
-```
-# JWT 密钥
-JWT_SECRET=your-super-secret-key-here
+## ✨ Description / 项目描述
 
-# HCaptcha (可选，用于人机验证)
-NEXT_PUBLIC_HCAPTCHA_SITE_KEY=your-hcaptcha-site-key
-HCAPTCHA_SECRET_KEY=your-hcaptcha-secret-key
-```
+### 🎯 核心功能
 
-### 3. 数据库初始化
-```bash
-# 方法一：使用一键设置命令
-npm run setup
+- **💕 表白墙** - 匿名表白功能，传递校园爱意
+- **🎪 校园圈** - 分享校园生活点滴，互动交流
+- **🛒 跳蚤市场** - 二手物品交易，绿色环保
+- **🎯 悬赏任务** - 发布和接收各类校园任务
+- **🔍 智能搜索** - 全站内容搜索，快速找到所需
+- **👤 用户系统** - 完整的注册、登录、认证体系
 
-# 方法二：分步执行
-npm run db:push      # 创建数据库表
-npm run db:generate  # 生成 Prisma Client
-node scripts/init-db.js  # 初始化示例数据
-```
+### 🛠️ 技术特色
 
-### 4. 启动开发服务器
-```bash
-npm run dev
-```
+- **现代化架构**: 基于Next.js 15 + React 19构建
+- **类型安全**: 全面使用TypeScript开发
+- **响应式设计**: 支持PC和移动端完美适配
+- **实时交互**: 流畅的用户体验和实时反馈
+- **数据安全**: JWT认证 + 数据加密存储
+- **性能优化**: 图片压缩、懒加载、缓存优化
 
-访问 [http://localhost:3000](http://localhost:3000) 查看应用。
+### 🎨 用户体验
 
-## 🔐 默认账号
+- **瀑布流布局**: 美观的卡片式内容展示
+- **无限滚动**: 流畅的内容加载体验
+- **图片画廊**: 支持多图上传和浏览
+- **评论互动**: 完整的评论和点赞系统
+- **搜索高亮**: 智能搜索结果高亮显示
 
-初始化完成后，系统会创建一个默认管理员账号：
-- **用户名**: `admin`
-- **密码**: `admin123`
+## 🚀 技术栈
 
-## 📦 可用脚本
+### 前端技术
+- **Next.js 15** - React全栈框架
+- **React 19** - 用户界面库
+- **TypeScript** - 类型安全的JavaScript
+- **Tailwind CSS** - 原子化CSS框架
+- **Lucide React** - 现代图标库
 
-- `npm run dev` - 启动开发服务器
-- `npm run build` - 构建生产版本
-- `npm run start` - 启动生产服务器
-- `npm run db:push` - 推送数据库架构更改
-- `npm run db:generate` - 生成 Prisma Client
-- `npm run db:init` - 初始化数据库和示例数据
-- `npm run db:studio` - 启动 Prisma Studio 数据库管理界面
-- `npm run setup` - 一键安装和初始化
+### 后端技术
+- **Next.js API Routes** - 服务端API
+- **Prisma** - 现代数据库ORM
+- **SQLite** - 轻量级数据库
+- **JWT** - 用户认证
+- **bcryptjs** - 密码加密
 
-## 🏗️ 技术栈
-
-- **前端**: Next.js 15 + React 19 + TypeScript
-- **样式**: Tailwind CSS
-- **数据库**: SQLite + Prisma ORM
-- **认证**: JWT
-- **文件上传**: 本地存储
-- **UI组件**: Radix UI + Lucide Icons
+### 开发工具
+- **ESLint** - 代码规范检查
+- **PostCSS** - CSS处理器
+- **Browser Image Compression** - 图片压缩
 
 ## 📁 项目结构
 
 ```
-src/
-├── app/              # Next.js App Router 页面
-├── components/       # React 组件
-├── lib/             # 工具函数和配置
-├── types/           # TypeScript 类型定义
-└── middleware.ts    # Next.js 中间件
-
-prisma/
-├── schema.prisma    # 数据库模式
-└── dev.db          # SQLite 数据库文件
-
-scripts/
-└── init-db.js      # 数据库初始化脚本
+sayit/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── api/               # API路由
+│   │   ├── confessions/       # 表白墙页面
+│   │   ├── posts/            # 校园圈页面
+│   │   ├── market/           # 跳蚤市场页面
+│   │   ├── tasks/            # 悬赏任务页面
+│   │   └── search/           # 搜索页面
+│   ├── components/            # React组件
+│   ├── lib/                  # 工具函数和Hooks
+│   └── types/                # TypeScript类型定义
+├── prisma/                   # 数据库配置
+├── public/                   # 静态资源
+└── scripts/                  # 脚本文件
 ```
 
-## 🎯 主要功能
+## 🎯 主要功能模块
 
-- **表白墙**: 匿名或实名发表表白内容
-- **校园圈**: 校园生活分享和讨论
-- **校园市场**: 二手物品交易
-- **悬赏任务**: 发布和接取任务
-- **用户系统**: 注册、登录、个人资料
-- **互动功能**: 点赞、评论、浏览统计
-- **图片上传**: 支持多图片上传和查看
+### 1. 表白墙 💕
+- 匿名发布表白内容
+- 支持图片上传
+- 点赞和评论互动
+- 瀑布流布局展示
 
-## 🔧 开发说明
+### 2. 校园圈 🎪
+- 分享校园生活
+- 分类标签管理
+- 多图片支持
+- 实时互动功能
 
-### 数据库管理
+### 3. 跳蚤市场 🛒
+- 二手物品发布
+- 价格和条件筛选
+- 商品分类浏览
+- 交易状态管理
+
+### 4. 悬赏任务 🎯
+- 任务发布和接收
+- 报酬设置
+- 截止日期管理
+- 申请状态跟踪
+
+### 5. 搜索系统 🔍
+- 全站内容搜索
+- 搜索结果高亮
+- 高级筛选功能
+- 搜索历史记录
+
+## 🌟 特色亮点
+
+- **🎨 精美UI设计**: 现代化的界面设计，符合年轻人审美
+- **📱 移动端优化**: 完美支持手机、平板等移动设备
+- **🔐 安全可靠**: 多层安全防护，保护用户隐私
+- **⚡ 性能优异**: 快速加载，流畅交互
+- **🌈 功能丰富**: 一站式解决校园生活需求
+
+## 🚀 快速开始
+
+### 环境要求
+- Node.js 18+
+- npm 或 yarn
+
+### 安装和运行
+
+1. **克隆项目**
 ```bash
-# 查看和编辑数据库
-npm run db:studio
+git clone https://github.com/your-username/sayit.git
+cd sayit
+```
 
-# 重置数据库（删除所有数据）
-rm prisma/dev.db
+2. **安装依赖**
+```bash
+npm install
+```
+
+3. **初始化数据库**
+```bash
 npm run db:init
 ```
 
-### 新用户首次使用
-如果是第一次运行项目，请务必执行：
+4. **启动开发服务器**
 ```bash
-npm run setup
+npm run dev
 ```
 
-这个命令会：
-1. 安装所有依赖
-2. 创建数据库表结构
-3. 生成 Prisma Client
-4. 创建默认管理员账号
+5. **构建生产版本**
+```bash
+npm run build
+npm run start
+```
 
-## �� 许可证
+### 环境变量配置
+创建 `.env.local` 文件：
+```env
+JWT_SECRET=your-secret-key
+DATABASE_URL="file:./dev.db"
+```
 
-MIT License 
+## 📝 许可证
+
+本项目基于 MIT 许可证开源。
+
+## 🤝 贡献指南
+
+欢迎提交Issue和Pull Request来改进项目！
+
+## 📞 联系方式
+
+如有问题或建议，请通过以下方式联系：
+- 提交 GitHub Issue
+- 发送邮件到项目维护者
+
+---
+
+**🎓 让校园生活更精彩！** 
