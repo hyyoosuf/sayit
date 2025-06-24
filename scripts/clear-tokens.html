@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>清除认证 Token</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; text-align: center; }
+        button { padding: 10px 20px; margin: 10px; font-size: 16px; }
+        .success { color: green; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🔧 清除认证 Token</h2>
+        <p>如果您重置了数据库但仍能登录，请点击下面的按钮清除浏览器中的认证 token。</p>
+        
+        <button onclick="clearToken()">清除 Token</button>
+        <button onclick="checkToken()">检查 Token</button>
+        
+        <div id="result"></div>
+        
+        <hr>
+        <p class="info">
+            <strong>使用说明：</strong><br>
+            1. 在浏览器中打开此文件<br>
+            2. 点击"清除 Token"按钮<br>
+            3. 刷新您的应用页面<br>
+            4. 现在应该需要重新登录
+        </p>
+    </div>
+
+    <script>
+        function clearToken() {
+            // 清除所有可能的 token 相关 cookie
+            document.cookie = 'auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            document.cookie = 'auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=localhost;';
+            document.cookie = 'auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.localhost;';
+            
+            // 清除 localStorage 和 sessionStorage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            document.getElementById('result').innerHTML = '<p class="success">✅ Token 已清除！请刷新您的应用页面。</p>';
+        }
+        
+        function checkToken() {
+            const cookies = document.cookie.split(';');
+            const authToken = cookies.find(cookie => cookie.trim().startsWith('auth-token='));
+            
+            if (authToken) {
+                const tokenValue = authToken.split('=')[1];
+                document.getElementById('result').innerHTML = `<p class="info">🔍 找到 Token: ${tokenValue.substring(0, 20)}...</p>`;
+            } else {
+                document.getElementById('result').innerHTML = '<p class="success">✅ 没有找到 Token</p>';
+            }
+        }
+        
+        // 页面加载时自动检查
+        window.onload = function() {
+            checkToken();
+        }
+    </script>
+</body>
+</html> 

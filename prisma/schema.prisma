@@ -1,0 +1,222 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id               String            @id @default(cuid())
+  email            String?           @unique
+  studentId        String?           @unique
+  username         String            @unique
+  password         String
+  avatar           String?
+  nickname         String?
+  school           String?
+  major            String?
+  grade            String?
+  isVerified       Boolean           @default(false)
+  role             String            @default("STUDENT")
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  deletedAt        DateTime?
+  comments         Comment[]
+  confessions      Confession[]
+  likes            Like[]
+  marketItems      MarketItem[]
+  notifications    Notification[]
+  posts            Post[]
+  taskApplications TaskApplication[]
+  acceptedTasks    Task[]            @relation("AcceptedTasks")
+  publishedTasks   Task[]            @relation("PublishedTasks")
+
+  @@map("users")
+}
+
+model Confession {
+  id          String       @id @default(cuid())
+  content     String
+  images      String       @default("[]")
+  isAnonymous Boolean      @default(true)
+  viewCount   Int          @default(0)
+  authorId    String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
+  comments    Comment[]
+  author      User         @relation(fields: [authorId], references: [id])
+  likes       Like[]
+  viewRecords ViewRecord[]
+
+  @@map("confessions")
+}
+
+model Post {
+  id          String       @id @default(cuid())
+  title       String
+  content     String
+  images      String       @default("[]")
+  category    String?
+  tags        String       @default("[]")
+  viewCount   Int          @default(0)
+  authorId    String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
+  comments    Comment[]
+  likes       Like[]
+  author      User         @relation(fields: [authorId], references: [id])
+  viewRecords ViewRecord[]
+
+  @@map("posts")
+}
+
+model Comment {
+  id           String      @id @default(cuid())
+  content      String
+  images       String      @default("[]")
+  authorId     String
+  postId       String?
+  confessionId String?
+  parentId     String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  deletedAt    DateTime?
+  parent       Comment?    @relation("CommentReplies", fields: [parentId], references: [id])
+  replies      Comment[]   @relation("CommentReplies")
+  confession   Confession? @relation(fields: [confessionId], references: [id])
+  post         Post?       @relation(fields: [postId], references: [id])
+  author       User        @relation(fields: [authorId], references: [id])
+  likes        Like[]
+
+  @@map("comments")
+}
+
+model Like {
+  id           String      @id @default(cuid())
+  userId       String
+  postId       String?
+  confessionId String?
+  commentId    String?
+  marketItemId String?
+  taskId       String?
+  createdAt    DateTime    @default(now())
+  task         Task?       @relation(fields: [taskId], references: [id])
+  marketItem   MarketItem? @relation(fields: [marketItemId], references: [id])
+  comment      Comment?    @relation(fields: [commentId], references: [id])
+  confession   Confession? @relation(fields: [confessionId], references: [id])
+  post         Post?       @relation(fields: [postId], references: [id])
+  user         User        @relation(fields: [userId], references: [id])
+
+  @@unique([userId, postId])
+  @@unique([userId, confessionId])
+  @@unique([userId, commentId])
+  @@unique([userId, marketItemId])
+  @@unique([userId, taskId])
+  @@map("likes")
+}
+
+model MarketItem {
+  id          String       @id @default(cuid())
+  title       String
+  description String
+  price       Float
+  images      String       @default("[]")
+  category    String
+  condition   String       @default("GOOD")
+  status      String       @default("AVAILABLE")
+  viewCount   Int          @default(0)
+  sellerId    String
+  buyerId     String?
+  location    String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
+  likes       Like[]
+  seller      User         @relation(fields: [sellerId], references: [id])
+  viewRecords ViewRecord[]
+
+  @@map("market_items")
+}
+
+model Task {
+  id           String            @id @default(cuid())
+  title        String
+  description  String
+  images       String            @default("[]")
+  reward       Float
+  category     String
+  deadline     DateTime?
+  status       String            @default("OPEN")
+  viewCount    Int               @default(0)
+  publisherId  String
+  acceptorId   String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  deletedAt    DateTime?
+  likes        Like[]
+  applications TaskApplication[]
+  acceptor     User?             @relation("AcceptedTasks", fields: [acceptorId], references: [id])
+  publisher    User              @relation("PublishedTasks", fields: [publisherId], references: [id])
+  viewRecords  ViewRecord[]
+
+  @@map("tasks")
+}
+
+model TaskApplication {
+  id        String   @id @default(cuid())
+  taskId    String
+  userId    String
+  message   String?
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  task      Task     @relation(fields: [taskId], references: [id])
+
+  @@unique([taskId, userId])
+  @@map("task_applications")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  content   String
+  type      String
+  isRead    Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("notifications")
+}
+
+model ViewRecord {
+  id           String      @id @default(cuid())
+  postId       String?
+  confessionId String?
+  marketItemId String?
+  taskId       String?
+  userId       String?
+  ip           String
+  userAgent    String?
+  createdAt    DateTime    @default(now())
+  task         Task?       @relation(fields: [taskId], references: [id])
+  marketItem   MarketItem? @relation(fields: [marketItemId], references: [id])
+  confession   Confession? @relation(fields: [confessionId], references: [id])
+  post         Post?       @relation(fields: [postId], references: [id])
+
+  @@index([postId, userId])
+  @@index([confessionId, userId])
+  @@index([marketItemId, userId])
+  @@index([taskId, userId])
+  @@index([postId, ip])
+  @@index([confessionId, ip])
+  @@index([marketItemId, ip])
+  @@index([taskId, ip])
+  @@index([createdAt])
+  @@map("view_records")
+}
