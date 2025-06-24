@@ -18,7 +18,9 @@ export function useAuth() {
         // 检查 localStorage 中的用户数据
         const userData = localStorage.getItem('user')
         if (!userData) {
-          console.log('未找到本地用户数据，用户为游客状态')
+          if (process.env.NODE_ENV === 'development') {
+            console.log('未找到本地用户数据，用户为游客状态')
+          }
           setLoading(false)
           return
         }
@@ -34,10 +36,14 @@ export function useAuth() {
         if (response.ok) {
           // 认证有效，设置用户数据
           setUser(parsedUser)
-          console.log('身份验证成功，用户已登录:', parsedUser.username)
+          if (process.env.NODE_ENV === 'development') {
+            console.log('身份验证成功，用户已登录:', parsedUser.username)
+          }
         } else {
           // 认证失败，清除本地数据，用户变为游客状态
-          console.log('身份验证失败，用户将以游客身份浏览')
+          if (process.env.NODE_ENV === 'development') {
+            console.log('身份验证失败，用户将以游客身份浏览')
+          }
           localStorage.removeItem('user')
           setUser(null)
         }
@@ -50,14 +56,18 @@ export function useAuth() {
           try {
             const parsedUser = JSON.parse(userData)
             setUser(parsedUser)
-            console.log('由于网络错误，保持本地登录状态')
+            if (process.env.NODE_ENV === 'development') {
+              console.log('由于网络错误，保持本地登录状态')
+            }
           } catch (parseError) {
             console.error('解析用户数据失败:', parseError)
             localStorage.removeItem('user')
             setUser(null)
           }
         } else {
-          console.log('网络错误且无本地数据，用户为游客状态')
+          if (process.env.NODE_ENV === 'development') {
+            console.log('网络错误且无本地数据，用户为游客状态')
+          }
         }
       } finally {
         setLoading(false)
@@ -71,10 +81,14 @@ export function useAuth() {
     setUser(userData)
     if (userData) {
       localStorage.setItem('user', JSON.stringify(userData))
-      console.log('用户状态已更新:', userData.username)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('用户状态已更新:', userData.username)
+      }
     } else {
       localStorage.removeItem('user')
-      console.log('用户已退出登录')
+      if (process.env.NODE_ENV === 'development') {
+        console.log('用户已退出登录')
+      }
     }
   }
 

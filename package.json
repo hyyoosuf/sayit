@@ -21,6 +21,7 @@
     "db:studio": "prisma studio",
     "db:reset": "rimraf prisma/dev.db && npm run db:init",
     "db:check-users": "node scripts/check-users.js",
+    "fix-uploads": "node scripts/fix-uploads.js",
     "setup": "npm install && npm run db:init"
   },
   "dependencies": {
