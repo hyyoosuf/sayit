@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
   },
   // 配置图片优化（可选）
   images: {
-    unoptimized: true, // 如果不需要图片优化，可以设置为true
+    unoptimized: false, // 如果不需要图片优化，可以设置为true
   },
   // 添加静态文件服务配置
   async rewrites() {
