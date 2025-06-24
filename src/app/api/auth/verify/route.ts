@@ -49,6 +49,9 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       )
       response.cookies.set('auth-token', '', { 
+        httpOnly: true,
+        secure: false, // 在HTTP环境下设为false
+        sameSite: 'lax',
         expires: new Date(0),
         path: '/'
       })

@@ -10,9 +10,10 @@ export async function POST() {
     // 清除 Cookie
     response.cookies.set('auth-token', '', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 0 // 立即过期
+      secure: false, // 在HTTP环境下设为false
+      sameSite: 'lax',
+      maxAge: 0, // 立即过期
+      path: '/' // 确保在所有路径下都清除
     })
 
     return response
