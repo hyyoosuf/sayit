@@ -42,10 +42,24 @@ export function useAuth() {
         } else {
           // 认证失败，清除本地数据，用户变为游客状态
           if (process.env.NODE_ENV === 'development') {
-            console.log('身份验证失败，用户将以游客身份浏览')
+            console.log('身份验证失败，清理本地状态，用户将以游客身份浏览')
           }
           localStorage.removeItem('user')
           setUser(null)
+          
+          // 如果是401状态，说明token无效，清除所有可能残留的认证信息
+          if (response.status === 401) {
+            // 触发一次清理请求，确保服务端也清理了缓存
+            try {
+              await fetch('/api/auth/logout', { 
+                method: 'POST',
+                credentials: 'include'
+              })
+            } catch (logoutError) {
+              // 忽略清理请求的错误
+              console.log('清理请求完成')
+            }
+          }
         }
       } catch (error) {
         console.error('验证认证状态时发生错误:', error)

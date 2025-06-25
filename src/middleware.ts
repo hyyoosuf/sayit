@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { verifyTokenCached } from '@/lib/auth'
 
 // 需要登录才能访问的路径（写权限）
 const protectedPaths = [
@@ -29,13 +30,8 @@ const guestOnlyPaths = [
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const token = request.cookies.get('auth-token')?.value
-  // const allCookies = request.cookies.getAll()
 
   console.log('中间件检查路径:', pathname, '- Token存在:', !!token)
-  if (token) {
-    console.log('中间件: Token前8位:', token.substring(0, 8) + '...')
-  }
-  // console.log('中间件: 所有Cookie:', allCookies.map(c => `${c.name}=${c.value ? c.value.substring(0, 8) + '...' : 'empty'}`).join(', '))
 
   // 检查是否为受保护的路径
   const isProtectedPath = protectedPaths.some(path => pathname.startsWith(path))
@@ -57,15 +53,39 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  // 简化的token检查：如果有token，我们假设它可能有效
-  // 详细的JWT验证将在各个API端点中进行（使用Node.js Runtime）
-  if (token) {
-    console.log('中间件: 找到token，允许继续（详细验证将在API中进行）')
-    
-    // 如果已登录用户访问仅客人页面（如登录、注册），重定向到首页
-    if (isGuestOnlyPath) {
-      console.log('中间件: 已登录用户访问客人页面，重定向到首页')
-      return NextResponse.redirect(new URL('/', request.url))
+  // 对于guest-only路径，需要验证token的有效性
+  if (token && isGuestOnlyPath) {
+    try {
+      // 验证token是否真的有效
+      const payload = verifyTokenCached(token)
+      if (payload) {
+        console.log('中间件: 有效token用户访问客人页面，重定向到首页')
+        return NextResponse.redirect(new URL('/', request.url))
+      } else {
+        console.log('中间件: token无效，允许访问客人页面')
+        // token无效，清除cookie并允许访问登录页
+        const response = NextResponse.next()
+        response.cookies.set('auth-token', '', {
+          httpOnly: true,
+          secure: false,
+          sameSite: 'lax',
+          maxAge: 0,
+          path: '/'
+        })
+        return response
+      }
+    } catch (error) {
+      console.error('中间件: token验证失败', error)
+      // token验证失败，清除cookie并允许访问登录页
+      const response = NextResponse.next()
+      response.cookies.set('auth-token', '', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        maxAge: 0,
+        path: '/'
+      })
+      return response
     }
   }
 
